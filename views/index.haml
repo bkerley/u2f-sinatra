@@ -1,0 +1,12 @@
+!!!5
+%html
+  %head
+    %title u2f sinatra
+    %script{src: "chrome-extension://pfboblefjcgdjicmnffhdgionmgcdmne/u2f-api.js"}
+  %body
+    %h1 u2f
+    %dl#console
+    %button#actually-register start register
+    %script#u2f-register-data{type: 'text/json'}= JSON.dump client_data
+    %script{src: 'jquery.js'}
+    %script{src: 'u2f.js'}
