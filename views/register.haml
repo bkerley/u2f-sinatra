@@ -1,0 +1,26 @@
+!!!5
+%html
+  %head
+    %title u2f sinatra
+  %body
+    %h1 Registration Response Hash
+    %code
+      %pre= rrh.pretty_inspect
+    
+    %h1 Registration Response Object
+    %dl
+      %dt matching challenge?
+      %dd= reg_resp.matching_challenge?
+      %dt matching appid and origin?
+      %dd= reg_resp.matching_appid_and_origin?
+
+      %dt user public key
+      %dd= reg_resp.user_public_key.inspect
+      %dt key handle length
+      %dd= reg_resp.key_handle_length
+      %dt key handle
+      %dd= reg_resp.key_handle
+      %dt attestation certificate
+      %dd= reg_resp.attestation_certificate.to_text
+    %code
+      %pre&= reg_resp.pretty_inspect

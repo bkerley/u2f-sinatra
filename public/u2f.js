@@ -20,6 +20,11 @@ jQuery(function($){
 
         u2f.register([request], [], function(data) {
             log("callback", data);
+            if (data['errorCode']) return;
+            var stringified = JSON.stringify(data);
+            $('input#rr-body').val(stringified);
+            $('input#rr-size').val(stringified.length);
+            $('form#registration-response').submit();
         });
     };
 

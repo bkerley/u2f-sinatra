@@ -7,6 +7,11 @@
     %h1 u2f
     %dl#console
     %button#actually-register start register
+
+    %form#registration-response{method: 'post', action: '/register'}
+      %input#rr-body{type: 'hidden', name: 'registration_response'}
+      %input#rr-size{type: 'hidden', name: 'registration_response_size'}
+
     %script#u2f-register-data{type: 'text/json'}= JSON.dump client_data
     %script{src: 'jquery.js'}
     %script{src: 'u2f.js'}
