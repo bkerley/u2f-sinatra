@@ -14,11 +14,11 @@ module U2F
     def initialize(registration_response_hash, options={  })
       @hash = registration_response_hash
       @options = options
-      @registration_data = Base64.decode64 hash['registrationData']
+      @registration_data = Base64.urlsafe_decode64 hash['registrationData']
       @challenge = options[:challenge]
       @version = hash['version']
       @app_id = options[:origin]
-      @client_data = JSON.parse Base64.decode64 hash['clientData']
+      @client_data = JSON.parse Base64.urlsafe_decode64 hash['clientData']
     end
 
     def matching_challenge?
