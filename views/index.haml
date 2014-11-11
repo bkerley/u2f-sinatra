@@ -10,8 +10,7 @@
 
     %form#registration-response{method: 'post', action: '/register'}
       %input#rr-body{type: 'hidden', name: 'registration_response'}
-      %input#rr-size{type: 'hidden', name: 'registration_response_size'}
 
-    %script#u2f-register-data{type: 'text/json'}= JSON.dump client_data
+    %script#u2f-register-data{type: 'text/json'}= JSON.dump reg_req.as_json
     %script{src: 'jquery.js'}
     %script{src: 'u2f.js'}

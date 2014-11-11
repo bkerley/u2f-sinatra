@@ -38,13 +38,14 @@ module U2F
     end
 
     def key_handle
-      decoded_registration_data[:key_handle]
+      Base64.urlsafe_encode64(String.from_java_bytes(decoded_registration_data[:key_handle]))
     end
 
     def attestation_certificate
-      @attestation_certificate ||= 
-        OpenSSL::X509::Certificate.new decoded_registration_data[:cert]
+      @attestation_certificate = decoded_registration_data[:cert]
     end
+    
+    private
 
     def decoded_registration_data
       return @decoded_registration_data if defined? @decoded_registration_data
@@ -61,8 +62,6 @@ module U2F
       h[:key_handle_length] = key_handle_length = io.read_unsigned_byte
       h[:key_handle] = kh = ("\0"*key_handle_length).to_java_bytes
       io.read_fully kh
-
-      puts io.available()
 
       x509_factory = CertificateFactory.get_instance 'X.509'
 

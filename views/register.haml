@@ -2,25 +2,26 @@
 %html
   %head
     %title u2f sinatra
+    %script{src: "chrome-extension://pfboblefjcgdjicmnffhdgionmgcdmne/u2f-api.js"}
   %body
-    %h1 Registration Response Hash
-    %code
-      %pre= rrh.pretty_inspect
     
+    %dl#console
+    %button#actually-sign start sign
+
+    %form#sign-response{method: 'post', action: '/sign'}
+      %textarea#sr-body
+
     %h1 Registration Response Object
     %dl
-      %dt matching challenge?
-      %dd= reg_resp.matching_challenge?
-      %dt matching appid and origin?
-      %dd= reg_resp.matching_appid_and_origin?
-
       %dt user public key
       %dd= reg_resp.user_public_key.inspect
-      %dt key handle length
-      %dd= reg_resp.key_handle_length
       %dt key handle
-      %dd= reg_resp.key_handle
+      %dd&= reg_resp.key_handle.inspect
       %dt attestation certificate
-      %dd= reg_resp.attestation_certificate.to_text
+      %dd&= reg_resp.attestation_certificate.pretty_inspect
     %code
       %pre&= reg_resp.pretty_inspect
+
+    %script#u2f-sign-data{type: 'text/json'}= JSON.dump auth_req.as_json
+    %script{src: 'jquery.js'}
+    %script{src: 'u2f.js'}
