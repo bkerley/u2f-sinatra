@@ -38,7 +38,7 @@ module U2F
     end
 
     def key_handle
-      Base64.urlsafe_encode64(String.from_java_bytes(decoded_registration_data[:key_handle]))
+      Base64.urlsafe_encode64(String.from_java_bytes(decoded_registration_data[:key_handle])).gsub('=', '')
     end
 
     def attestation_certificate

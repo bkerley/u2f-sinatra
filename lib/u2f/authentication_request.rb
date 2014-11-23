@@ -8,7 +8,7 @@ module U2F
     end
 
     def challenge
-      @challenge ||= SecureRandom.urlsafe_base64(32)
+      @challenge ||= SecureRandom.urlsafe_base64(32).gsub('=', '')
     end
 
     def as_json
