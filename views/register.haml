@@ -9,7 +9,7 @@
     %button#actually-sign start sign
 
     %form#sign-response{method: 'post', action: '/sign'}
-      %textarea#sr-body
+      %textarea#sr-body{name: 'authentication_response'}
 
     %h1 Registration Response Object
     %dl
@@ -21,6 +21,12 @@
       %dd&= reg_resp.attestation_certificate.pretty_inspect
     %code
       %pre&= reg_resp.pretty_inspect
+
+    %h1 Session
+    %dl
+      - session.each do |k,v|
+        %dt=k.inspect
+        %dd=v.pretty_inspect
 
     %script#u2f-sign-data{type: 'text/json'}= JSON.dump auth_req.as_json
     %script{src: 'jquery.js'}

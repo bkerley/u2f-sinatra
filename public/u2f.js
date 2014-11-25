@@ -30,7 +30,8 @@ jQuery(function($){
             log("callback", data);
             if (data['errorCode']) return;
             var stringified = JSON.stringify(data);
-            $('input#sr-body').val(stringified);
+            $('textarea#sr-body').val(stringified);
+            $('form#sign-response').submit();
         });
     };
 
