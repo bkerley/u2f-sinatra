@@ -13,22 +13,26 @@ require 'pp'
 require './lib/u2f/registration_request'
 require './lib/u2f/registration_response'
 require './lib/u2f/authentication_request'
+require './lib/u2f/authentication_response'
 include U2F
 
+set :session_secret, 'TODO FIXME CHANGEME LOL'
 enable :sessions
+disable :protection
+
 
 ORIGIN = ENV['U2F_ORIGIN'] || 'http://u2f-sinatra.127.0.0.1.xip.io:9292'
 
 get '/' do
   req = RegistrationRequest.new ORIGIN
-  session[:challenge] = req.challenge
+  session[:reg_challenge] = req.challenge
 
   haml :index, locals: { reg_req: req }
 end
 
 post '/register' do
   rrh = JSON.parse params[:registration_response]
-  reg_resp = RegistrationResponse.new rrh, origin: ORIGIN, challenge: session[:challenge]
+  reg_resp = RegistrationResponse.new rrh, origin: ORIGIN, challenge: session[:reg_challenge]
 
   raise "mismatched challenge" unless reg_resp.matching_challenge?
 
@@ -39,7 +43,21 @@ post '/register' do
 
   req = AuthenticationRequest.new session[:key_handle], ORIGIN
 
-  session[:challenge] = req.challenge
+  session[:auth_challenge] = req.challenge
 
-  haml :register, locals: { reg_resp: reg_resp, auth_req: req }
+  haml :register, locals: { reg_resp: reg_resp, auth_req: req, session: session }
+end
+
+post '/sign' do
+  arh = JSON.parse params[:authentication_response]
+content_type 'text/plain'
+  return session.map{|k, v| "#{k.inspect} => #{v.inspect}" }.join("\n")
+  auth_resp = AuthenticationResponse.new arh, origin: ORIGIN, challenge: session[:auth_challenge], public_key: session[:public_key], key_handle: session[:key_handle]
+
+  raise "mismatched challenge" unless auth_resp.matching_challenge?
+  raise "mismatched appid and origin" unless auth_resp.matching_appid_and_origin?
+  raise "mismatched key handle" unless auth_resp.matching_key_handle?
+  raise "invalid signature" unless auth_resp.valid_signature?
+
+  haml :signed, locals: {auth_resp: auth_resp}
 end
