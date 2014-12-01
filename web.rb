@@ -16,10 +16,8 @@ require './lib/u2f/authentication_request'
 require './lib/u2f/authentication_response'
 include U2F
 
-set :session_secret, 'TODO FIXME CHANGEME LOL'
-enable :sessions
+use Rack::Session::Cookie, secret: 'TODO FIXME CHANGEME LOL'
 disable :protection
-
 
 ORIGIN = ENV['U2F_ORIGIN'] || 'http://u2f-sinatra.127.0.0.1.xip.io:9292'
 
@@ -28,6 +26,11 @@ get '/' do
   session[:reg_challenge] = req.challenge
 
   haml :index, locals: { reg_req: req }
+end
+
+get '/huh' do
+  content_type 'text/plain'
+  ""
 end
 
 post '/register' do
@@ -50,8 +53,7 @@ end
 
 post '/sign' do
   arh = JSON.parse params[:authentication_response]
-content_type 'text/plain'
-  return session.map{|k, v| "#{k.inspect} => #{v.inspect}" }.join("\n")
+pp session[:auth_challenge]
   auth_resp = AuthenticationResponse.new arh, origin: ORIGIN, challenge: session[:auth_challenge], public_key: session[:public_key], key_handle: session[:key_handle]
 
   raise "mismatched challenge" unless auth_resp.matching_challenge?
